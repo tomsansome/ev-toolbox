@@ -113,17 +113,15 @@
       const pencePerKwhInput = document.getElementById("costpkwh");
       const chargeInput = document.getElementById("charge");
 
-      (function() {
-        if (localStorageBatterySize) {
-          batteryInput.value = localStorageBatterySize;
-          batteryVal = localStorageBatterySize;
-        }
+      if (localStorageBatterySize) {
+        batteryInput.value = localStorageBatterySize;
+        batteryVal = localStorageBatterySize;
+      }
 
-        if (localStoragePencePerKwh) {
-          pencePerKwhInput.value = localStoragePencePerKwh;
-          pencePerKwh = localStoragePencePerKwh;
-        }
-      })();
+      if (localStoragePencePerKwh) {
+        pencePerKwhInput.value = localStoragePencePerKwh;
+        pencePerKwh = localStoragePencePerKwh;
+      }
 
       const getKwhLeftToCharge = () => batteryVal - (chargeVal / 100) * batteryVal;
 

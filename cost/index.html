@@ -98,7 +98,6 @@
     </main>
 
     <script>
-      // Local storage
       const BATTERY_SIZE = 'evTools-Cost-BatterySize';
       const PENCE_PER_KWH = 'evTools-Cost-PencePerKwh';
 
@@ -114,7 +113,6 @@
       const pencePerKwhInput = document.getElementById("costpkwh");
       const chargeInput = document.getElementById("charge");
 
-      // Check localstorage for previous battery size input
       (function() {
         if (localStorageBatterySize) {
           batteryInput.value = localStorageBatterySize;

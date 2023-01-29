@@ -1,0 +1,161 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Cost | EV Toolbox | Tom Sansome</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <style>
+      body {
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+          Helvetica, Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji",
+          "Segoe UI Symbol";
+      }
+
+      main {
+        max-width: 400px;
+        margin: 40px auto;
+        padding: 0 20px;
+      }
+
+      hr {
+        margin: 40px 0;
+      }
+
+      fieldset {
+        border: 0;
+        margin: 0;
+        padding: 10px 0;
+      }
+
+      label {
+        display: block;
+      }
+
+      input {
+        display: block;
+        width: 100%;
+        margin: 10px 0;
+        padding: 10px;
+        border-radius: 4px;
+        border: 2px solid #333;
+        font-size: 20px;
+        box-sizing: border-box;
+      }
+
+      .cost {
+        padding-top: 10px;
+      }
+
+      .cost > span {
+        text-transform: uppercase;
+        font-weight: bold;
+        font-size: 14px;
+      }
+
+      .total {
+        padding-top: 10px;
+        font-size: 40px;
+        font-variant-numeric: tabular-nums;
+      }
+
+      .time {
+        padding-top: 10px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <main>
+      <h1>How much will it cost to charge?</h1>
+
+      <fieldset>
+        <label for="battery">Car battery size (kWh)</label>
+        <input type="number" id="battery" name="battery" min="1" />
+      </fieldset>
+
+      <fieldset>
+        <label for="costpkwh">Pence per kWh</label>
+        <input type="number" id="costpkwh" name="costpkwh" min="1" />
+      </fieldset>
+
+      <fieldset>
+        <label for="charge">Car current charge (percentage)</label>
+        <input type="number" id="charge" name="charge" min="1" />
+      </fieldset>
+
+      <div class="cost">
+        <span>Cost to get to 100% charge</span>
+        <div class="total">
+          <span>£</span>
+          <span class="total-value"></span>
+        </div>
+      </div>
+
+      <hr />
+
+      <footer>
+        <a href="/">&larr; Back to list</a>
+      </footer>
+    </main>
+
+    <script>
+      // Local storage
+      const BATTERY_SIZE = 'evTools-Cost-BatterySize';
+      const PENCE_PER_KWH = 'evTools-Cost-PencePerKwh';
+
+      const localStorageBatterySize = parseInt(localStorage.getItem(BATTERY_SIZE));
+      const localStoragePencePerKwh = parseInt(localStorage.getItem(PENCE_PER_KWH));
+
+      let batteryVal = 0;
+      let pencePerKwh = 0;
+      let chargeVal = 0;
+      let total = 0;
+
+      const batteryInput = document.getElementById("battery");
+      const pencePerKwhInput = document.getElementById("costpkwh");
+      const chargeInput = document.getElementById("charge");
+
+      // Check localstorage for previous battery size input
+      (function() {
+        if (localStorageBatterySize) {
+          batteryInput.value = localStorageBatterySize;
+          batteryVal = localStorageBatterySize;
+        }
+
+        if (localStoragePencePerKwh) {
+          pencePerKwhInput.value = localStoragePencePerKwh;
+          pencePerKwh = localStoragePencePerKwh;
+        }
+      })();
+
+      const getKwhLeftToCharge = () => batteryVal - (chargeVal / 100) * batteryVal;
+
+      const updateTotal = () => {
+        total = (getKwhLeftToCharge() * pencePerKwh) / 100;
+        document.querySelector(".total-value").innerHTML = total.toFixed(2);
+      };
+
+      const onBatteryInput = (e) => {
+        const { value } = e.currentTarget;
+        batteryVal = parseInt(value);
+        localStorage.setItem(BATTERY_SIZE, value);
+        updateTotal();
+      };
+
+      const onCostInput = (e) => {
+        const { value } = e.currentTarget;
+        pencePerKwh = parseInt(value);
+        localStorage.setItem(PENCE_PER_KWH, value);
+        updateTotal();
+      }
+
+      const onChargeInput = (e) => {
+        chargeVal = parseInt(e.currentTarget.value);
+        updateTotal();
+      };
+
+      batteryInput.addEventListener("input", (e) => onBatteryInput(e));
+      pencePerKwhInput.addEventListener("input", (e) => onCostInput(e));
+      chargeInput.addEventListener("input", (e) => onChargeInput(e));
+    </script>
+  </body>
+</html>
